@@ -10,10 +10,12 @@ public class BoardServiceImpl implements BoardService{
 	private static BoardServiceImpl service = null;
 	private BoardDAO dao;
 	
+	//생성자 생성시 BoardDAO 인스턴스 생성
 	private BoardServiceImpl() {
 		dao = BoardDAO.getInstance();
 	}
 	
+	// 싱글톤
 	public static BoardServiceImpl getInstance() {
 		if(service == null) {
 			service = new BoardServiceImpl();
@@ -28,4 +30,28 @@ public class BoardServiceImpl implements BoardService{
 		return list;
 	}
 
+	@Override
+	public int boardInsert(BoardVO boardVO) {
+		int result = dao.boardInsert(boardVO);
+		
+		return result;
+	}
+
+	@Override
+	public void readcntUpdate(BoardVO boardVO) {
+		dao.readCount(boardVO);
+	}
+
+	@Override
+	public BoardVO boardDetail(BoardVO boardVO) {
+		BoardVO board = dao.boardDetail(boardVO);
+		board.setContent(board.getContent().replaceAll("\n", "<br />"));
+		return board;
+	}
+
+	@Override
+	public BoardVO updateForm(BoardVO boardVO) {
+		BoardVO board = dao.boardDetail(boardVO);
+		return board;
+	}
 }

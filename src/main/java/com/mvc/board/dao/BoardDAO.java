@@ -5,6 +5,7 @@ import static com.mvc.common.util.DBUtil.getConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,5 +56,71 @@ public class BoardDAO {
 		}
 		
 		return list;
+	}
+	
+	public int boardInsert(BoardVO boardVO) {
+		StringBuilder query = new StringBuilder();
+		query.append("INSERT INTO board(num, author, title, content, passwd) ");
+		query.append("VALUES(board_seq.nextval,  ?,  ?,  ?,  ?) ");
+		
+		int result = 0;
+		
+		try(Connection conn = getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(query.toString());) {
+			
+			pstmt.setString(1, boardVO.getAuthor());
+			pstmt.setString(2, boardVO.getTitle());
+			pstmt.setString(3, boardVO.getContent());
+			pstmt.setString(4, boardVO.getPasswd());
+			
+			result = pstmt.executeUpdate();
+		}catch(SQLException e) {
+			e.printStackTrace();
+			System.err.println(e.getMessage());
+		}
+		return result;
+	}
+
+	public void readCount(BoardVO boardVO) {
+		StringBuilder query = new StringBuilder();
+		query.append("UPDATE board SET readcnt = readcnt + 1 ");
+		query.append("WHERE num = ? ");
+		
+		try(Connection conn = getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(query.toString());) {
+			
+			pstmt.setInt(1, boardVO.getNum());
+			pstmt.executeUpdate();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+			System.err.println(e.getMessage());
+		}
+	}
+
+	public BoardVO boardDetail(BoardVO boardVO) {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT num, author, title, content, ");
+		query.append("TO_CHAR(writeday, 'YYYY-MM-DD HH24:MI:SS') writeday, readcnt ");
+		query.append("FROM board WHERE num = ? ");
+		BoardVO resultData = null;
+		
+		try(Connection conn = getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(query.toString());) {
+			
+			pstmt.setInt(1, boardVO.getNum());
+			
+			try(ResultSet rs = pstmt.executeQuery()) {
+				if(rs.next()) {
+					resultData = addBoard(rs);
+					resultData.setContent(rs.getString("content"));
+				}
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+			System.err.println(e.getMessage());
+		}
+		
+		return resultData;
 	}
 }
