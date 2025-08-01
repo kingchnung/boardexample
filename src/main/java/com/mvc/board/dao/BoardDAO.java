@@ -5,7 +5,6 @@ import static com.mvc.common.util.DBUtil.getConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +48,43 @@ public class BoardDAO {
 			
 			while(rs.next()) {
 				list.add(addBoard(rs));
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+			System.err.println(e.getMessage());
+		}
+		
+		return list;
+	}
+	
+	public List<BoardVO> boardList(BoardVO boardVO) {
+		List<BoardVO> list = new ArrayList<>();
+		String search = boardVO.getSearch();
+		String keyword = boardVO.getKeyword();
+		
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT num, author, title, ");
+		query.append("TO_CHAR(writeday, 'YYYY/MM/DD') writeday, readcnt ");
+		query.append("FROM board ");
+		
+		switch(search) {
+		case "title" -> query.append(" WHERE title LIKE ? ");
+		case "author" -> query.append(" WHERE author LIKE ? ");
+		}
+		query.append("ORDER BY num desc ");
+		
+		try(Connection conn = getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(query.toString());) {
+			
+			if(!search.equals("all")) {
+				pstmt.setString(1, "%" + keyword + "%");
+			}
+			
+			try(ResultSet rs = pstmt.executeQuery()) {
+				
+				while(rs.next()) {
+					list.add(addBoard(rs));
+				}
 			}
 		}catch(SQLException e) {
 			e.printStackTrace();
@@ -122,5 +158,82 @@ public class BoardDAO {
 		}
 		
 		return resultData;
+	}
+
+	public int boardUpdate(BoardVO boardVO) {
+		StringBuilder query = new StringBuilder();
+		query.append("UPDATE board SET title = ?, content = ? ");
+		if(boardVO.getPasswd() != "") query.append(", passwd = ? ");
+		query.append("WHERE num = ? ");
+		
+		int result = 0;
+		try(Connection conn = getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(query.toString());){
+			
+			pstmt.setString(1, boardVO.getTitle());
+			pstmt.setString(2, boardVO.getContent());
+			
+			if(boardVO.getPasswd() != "") {
+				pstmt.setString(3,	boardVO.getPasswd());
+				pstmt.setInt(4, boardVO.getNum());
+			} else {
+				pstmt.setInt(3, boardVO.getNum());
+			}
+			
+			result = pstmt.executeUpdate();
+		}catch(SQLException e) {
+			e.printStackTrace();
+			System.err.println(e.getMessage());
+		}
+		
+		return result;
+	}
+
+	public int boardDelete(BoardVO boardVO) {
+		StringBuilder query = new StringBuilder();
+		query.append("DELETE FROM board WHERE num = ? ");
+		
+		int result = 0;
+		try(Connection conn = getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(query.toString());) {
+			
+			pstmt.setInt(1, boardVO.getNum());
+			
+			result = pstmt.executeUpdate();
+		}catch(SQLException e) {
+			e.printStackTrace();
+			System.err.println(e.getMessage());
+		}
+		return result;
+	}
+
+	public int boardpasswdCheck(BoardVO boardVO) {
+		String query = """
+				SELECT CASE
+				WHEN EXISTS(SELECT 1 FROM board WHERE num = ? AND passwd = ?)
+				THEN 1
+				ELSE 0
+				END AS result
+				FROM dual
+				""";
+		
+		int result = 0;
+		
+		try(Connection conn = getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(query);) {
+			
+			pstmt.setInt(1, boardVO.getNum());
+			pstmt.setString(2, boardVO.getPasswd());
+			
+			try(ResultSet rs = pstmt.executeQuery()) {
+				if(rs.next()) {
+					result = rs.getInt("result");
+				}
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+			System.err.println(e.getMessage());
+		}
+		return result;
 	}
 }

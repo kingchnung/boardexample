@@ -5,7 +5,7 @@
 <body>
 	<div class="container">
 		<div class="text-center">
-			<h3>게시판 상세 화면</h3>
+			<h3>게시판 수정 화면</h3>
 		</div>
 		<form id="f_updateForm">
 			<div class="text-center">
@@ -24,6 +24,12 @@
 					</tr>
 					<tr>
 						<td class="text-center">글제목</td>
+						<td colspan="3">
+							<input type="text" name="title" id="title" value="${updateData.title }" class="form-control" />
+						</td>					
+					</tr>
+					<tr>
+						<td class="text-center">글내용</td>
 						<td colspan="3">
 							<textarea name="content" id="content" rows="8" class="form-control">${updateData.content}</textarea>
 						</td>

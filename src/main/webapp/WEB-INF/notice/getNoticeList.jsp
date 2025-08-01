@@ -1,14 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-
-<%@ include file="/WEB-INF/common/header.jsp"%>
+    pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/common/header.jsp" %>
 
 <body>
 	<div class="container">
-		<div class="text-center">
-			<h3>게시판 리스트</h3>
-		</div>
-		<form name="detailForm" id="detailForm">
+		<div class="text-center"><h3>공지 리스트</h3></div>	
+		<form name="detailForm" id="datailForm">
 			<input type="hidden" name="num" id="num" />
 		</form>
 		<form id="f_search" name="f_search">
@@ -34,8 +31,8 @@
 				</div>
 			</div>
 		</form>
-		<div id="boardList">
-			<table summary="게시판 리스트" class="table">
+		<div id="noticeList">
+			<table summary="공지 리스트" class="table">
 				<thead>
 					<tr class="text-center">
 						<th class="col-md-1">번호</th>
@@ -48,14 +45,13 @@
 				<tbody>
 					<c:choose>
 						<c:when test="${not empty list}">
-							<c:forEach var="board" items="${list}">
-								<tr class="text-center" data-num="${board.num }">
-									<td>${board.num }</td>
-									<td class="text-start"><span class="goDetail">${board.title}</span>
-									</td>
-									<td>${board.author}</td>
-									<td>${board.writeday }</td>
-									<td>${board.readcnt }</td>
+							<c:forEach var="notice" items="${list}">
+								<tr class="text-center" data-num="${notice.noticeNo }">
+									<td>${notice.noticeNo }</td>
+									<td class="text-start"><span class="goDetail">${notice.title}</span></td>
+									<td>${notice.writer}</td>
+									<td>${notice.writeday }</td>
+									<td>${notice.viewCnt }</td>
 								</tr>
 							</c:forEach>
 						</c:when>
@@ -68,13 +64,12 @@
 				</tbody>
 			</table>
 		</div>
-
 		<div class="contentBtn text-end">
 			<button type="button" id="writeForm" class="btn btn-primary btn-sm">글작성</button>
 		</div>
 	</div>
-	<%@ include file="/WEB-INF/common/footer.jsp"%>
-	<script src="/include/js/getBoardList.js"></script>
+	<%@ include file="/WEB-INF/common/footer.jsp" %>
+	<script src="/include/js/getNoticeList.js"></script>
 	<script>
 	/* 검색 후 검색 대상과 검색 단어 출력 - 검색여부는 키워드(keyword)의 값 존재여부로 제어 */ 				
 	if('${param.keyword}'!=""){
