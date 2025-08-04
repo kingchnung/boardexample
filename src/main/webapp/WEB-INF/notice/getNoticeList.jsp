@@ -18,7 +18,7 @@
 						class="form-select form-select-sm">
 						<option value="all">전체조회</option>
 						<option value="title">제목</option>
-						<option value="author">작성자</option>
+						<option value="writer">작성자</option>
 					</select>
 				</div>
 				<div class="col-auto">

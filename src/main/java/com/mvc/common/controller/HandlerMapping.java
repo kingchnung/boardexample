@@ -11,7 +11,10 @@ import com.mvc.board.controller.InsertFormController;
 import com.mvc.board.controller.PasswdCheckController;
 import com.mvc.board.controller.UpdateBoardController;
 import com.mvc.board.controller.UpdateFormController;
+import com.mvc.notice.controller.DetailFormController;
 import com.mvc.notice.controller.GetNoticeListController;
+import com.mvc.notice.controller.InsertFormNoticeController;
+import com.mvc.notice.controller.InsertNoticeController;
 
 public class HandlerMapping {
 	private Map<String, Controller> mappings;
@@ -29,7 +32,9 @@ public class HandlerMapping {
 		mappings.put("/board/deleteBoard.do", new DeleteBoardController());
 		mappings.put("/board/passwdCheck.do", new PasswdCheckController());
 		mappings.put("/notice/getNoticeList.do", new GetNoticeListController());
-	
+		mappings.put("/notice/insertFormNotice.do", new InsertFormNoticeController());
+		mappings.put("/notice/insertNotice.do", new InsertNoticeController());
+		mappings.put("/notice/detailForm.do", new DetailFormController());
 	}
 	
 	public Controller getController(String path) {

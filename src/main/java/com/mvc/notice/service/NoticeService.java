@@ -6,6 +6,9 @@ import com.mvc.notice.vo.NoticeVO;
 
 public interface NoticeService {
 
-	List<NoticeVO> NoticeList(NoticeVO noticeVO);
-	
+	List<NoticeVO> noticeList(NoticeVO noticeVO);
+	int noticeInsert(NoticeVO noticeVO);
+	List<NoticeVO> noticeList();
+	void viewCntUpdate(NoticeVO noticeVO);
+	NoticeVO noticeDetail(NoticeVO noticeVO);
 }

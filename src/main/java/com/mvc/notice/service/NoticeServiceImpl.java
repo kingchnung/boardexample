@@ -21,9 +21,34 @@ public class NoticeServiceImpl implements NoticeService{
 	}
 
 	@Override
-	public List<NoticeVO> NoticeList(NoticeVO noticeVO) {
+	public List<NoticeVO> noticeList() {
 		List<NoticeVO> list = dao.noticeList();
 		return list;
+	}
+	
+	@Override
+	public List<NoticeVO> noticeList(NoticeVO noticeVO) {
+		List<NoticeVO> list = dao.noticeList(noticeVO);
+		return list;
+	}
+
+	@Override
+	public int noticeInsert(NoticeVO noticeVO) {
+		int result = dao.noticeInsert(noticeVO);
+		return result;
+	}
+
+	@Override
+	public void viewCntUpdate(NoticeVO noticeVO) {
+		dao.viewCnt(noticeVO);
+		
+	}
+
+	@Override
+	public NoticeVO noticeDetail(NoticeVO noticeVO) {
+		NoticeVO notice = dao.noticeDetail(noticeVO);
+		notice.setContent(notice.getContent().replaceAll("\n", "<br />"));
+		return notice;
 	}
 	
 	

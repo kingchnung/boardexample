@@ -1,7 +1,5 @@
 package com.mvc.notice.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,26 +8,22 @@ import com.mvc.notice.service.NoticeService;
 import com.mvc.notice.service.NoticeServiceImpl;
 import com.mvc.notice.vo.NoticeVO;
 
-public class GetNoticeListController implements Controller {
+public class DetailFormController implements Controller {
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) {
-		String search = request.getParameter("search");
-		
-		if(search == null) {
-			search = "all";
-		}
-		
+		String num = request.getParameter("noticeNo");
 		NoticeVO noticeVO = new NoticeVO();
-		noticeVO.setSearch(search);
-		noticeVO.setKeyword(request.getParameter("keyword"));
+		noticeVO.setNoticeNo(Integer.parseInt(num));
 		
 		NoticeService service = NoticeServiceImpl.getInstance();
-		List<NoticeVO> list = service.noticeList(noticeVO);
+		service.viewCntUpdate(noticeVO);
 		
-		request.setAttribute("list", list);
+		NoticeVO notice = service.noticeDetail(noticeVO);
 		
-		return "/notice/getNoticeList";
+		request.setAttribute("detail", notice);
+		
+		return "/notice/detailNotice";
 	}
 
 }
